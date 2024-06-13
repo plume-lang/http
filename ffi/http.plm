@@ -1,0 +1,33 @@
+type Request {
+  Request(str, str, Map<str>)
+}
+
+type Response { }
+
+native "js" "http-ffi" {
+  start_server(port: int, callback: fn(Request, Response): unit): unit
+  respond(response: Response, status: int, headers: Map<str>, body: str): unit
+  does_url_match(url: str, path: str): bool
+}
+
+extend show<Request> {
+  fn show_prec(x, _) => switch x {
+    case Request(method, path, params) => "Request(" + method + ", " + path + ", " + show(params) + ")"
+  }
+}
+
+extend show<Response> {
+  fn show_prec(_, _) => "Response"
+}
+
+fn get_headers(req: Request) => switch req {
+  case Request(_, _, headers) => headers
+}
+
+fn get_method(req: Request) => switch req {
+  case Request(method, _, _) => method
+}
+
+fn get_url(req: Request) => switch req {
+  case Request(_, path, _) => path
+}
