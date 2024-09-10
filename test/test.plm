@@ -2,19 +2,19 @@ require "../ffi/http"
 
 start_server(8000, fn(req, res) {
   headers = req.get_headers()
-  host = headers.get("host").or_else("unknown")
+  host = headers.lookup("host").or_else("unknown")
   path = req.get_url()
   
   println("[$path] Request received from $host")
 
   if does_url_match(path, "/hello") {
-    res.respond(200, from_list([
+    res.respond(200, [
       ("Content-Type", "text/plain")
-    ]), "Hello, World!")
+    ], "Hello, World!")
   } else {
-    res.respond(404, from_list([
+    res.respond(404, [
       ("Content-Type", "text/plain")
-    ]), "Not Found")
+    ], "Not Found")
   }
 })
 
