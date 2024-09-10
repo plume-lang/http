@@ -7,32 +7,18 @@ function callLambda(lambda) {
   return (...args) => handler(env, ...args);
 }
 
-const Node = (key, value, rest) => [null, "Map", "Node", key, value, rest];
-const Empty = [null, "Map", "Empty"];
-
 function toMap(obj) {
-  const objKeys = Object.keys(obj);
-  const objValues = Object.values(obj);
-
-  if (objKeys.length === 0) {
-    return Empty;
-  }
-  
-  function helper(keys, values) {
-    if (keys.length === 0) {
-      return Empty;
-    }
-    return Node(keys[0], values[0], helper(keys.slice(1), values.slice(1)));
-  }
-
-  return helper(objKeys, objValues);
+  return Object.entries(obj).map(([key, value]) => [null, "tuple", "tuple", key, value]);
 }
 
 function fromMap(map) {
-  if (map[2] === "Empty") {
-    return {};
+  const obj = {};
+
+  for (const [_, __, ___, key, value] of map) {
+    obj[key] = value;
   }
-  return { [map[3]]: map[4], ...fromMap(map[5]) };
+
+  return obj;
 }
 
 function exportFunction(func) {
